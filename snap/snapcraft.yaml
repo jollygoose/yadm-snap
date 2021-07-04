@@ -1,0 +1,35 @@
+name: yadm
+adopt-info: yadm
+base: core18
+license: GPL-3.0
+grade: stable
+confinement: classic
+architectures:
+  - all
+summary: Yet Another Dotfiles Manager
+description: |
+  yadm is a dotfile management tool with 3 main features: Manages files across
+  systems using a single Git repository. Provides a way to use alternate files on
+  a specific OS or host. Supplies a method of encrypting confidential data so it
+  can safely be stored in your repository.
+
+apps:
+  yadm:
+    command: usr/bin/yadm
+    plugs:
+      - home
+      - network
+
+parts:
+  yadm:
+    source: https://github.com/TheLocehiliosan/yadm.git
+    source-tag: "3.1.0"
+    plugin: dump
+    override-pull: |
+      snapcraftctl pull
+      snapcraftctl set-version "$(git describe --tags | sed -e 's/^v//')"
+    override-build: |
+      snapcraftctl build
+      make install PREFIX="$SNAPCRAFT_PART_INSTALL/usr/"
+    stage:
+      - usr
